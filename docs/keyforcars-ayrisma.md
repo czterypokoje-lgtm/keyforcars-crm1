@@ -1,6 +1,6 @@
 # KeyForCars ile ayrışma: veri ve hesaplar
 
-_23 Kasım 2026. Karar: veri ve hesaplar tamamen ayrılır, kod şimdilik ortak kalır (tek repo, `CRM_INSTALL`)._
+_23 Kasım 2026. Karar: veri, hesaplar ve kod tamamen ayrılır. Kod artık bu repoda (`czterypokoje-lgtm/keyforcars-crm1`); Autosleutel24 kendi reposunda (`czterypokoje-lgtm/autoslutel`) kalır._
 
 ## Bugün ne ayrı, ne ortak
 

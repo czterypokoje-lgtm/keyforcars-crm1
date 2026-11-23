@@ -1,10 +1,12 @@
-# KeyForCars op autosleutel-crm-erp — installatie, go-live en terugrol
+# KeyForCars CRM — installatie, go-live en terugrol
 
-_Opgesteld 21 november 2026. Achtergrond en analyse: [keyforcars-gecis-analizi.md](keyforcars-gecis-analizi.md) (Turks)._
+_Opgesteld 21 november 2026, bijgewerkt 23 november 2026: KeyForCars heeft nu een eigen repository,
+`czterypokoje-lgtm/keyforcars-crm1` (deze). Zie ook [keyforcars-ayrisma.md](keyforcars-ayrisma.md)._
 
 KeyForCars (winkel + WooCommerce-webshops, geen monteurs) stapt over van de oude fork
-`czterypokoje-lgtm/keyforcars-crm` naar deze repository `uroborosoftware/autosleutel-crm-erp`,
-met `CRM_INSTALL=keyforcars` en `CRM_WAREHOUSE=1`. De oude fork is een strikt oudere subset:
+`czterypokoje-lgtm/keyforcars-crm` naar deze repository `czterypokoje-lgtm/keyforcars-crm1`
+(afgesplitst uit de gedeelde codebase met Autosleutel24; `CRM_INSTALL` is hier standaard `keyforcars`),
+met `CRM_WAREHOUSE=1`. De oude fork is een strikt oudere subset:
 migraties 0001–0105 zijn byte-voor-byte gelijk. De KeyForCars-database staat op **0105**.
 
 | | Autosleutel24 | KeyForCars |
@@ -159,12 +161,11 @@ KeyForCars-sleutel. De guard laat zo'n deploy met 503 stoppen.
 
 ### 4.2 Git-bron omzetten
 1. Vercel → `keyforcars-crm` → Settings → Git → **Disconnect** `czterypokoje-lgtm/keyforcars-crm`.
-2. **Connect Git Repository** → `uroborosoftware/autosleutel-crm-erp` (de Vercel GitHub-app moet
-   toegang hebben tot de organisatie `uroborosoftware`). Production Branch: `main`.
-3. Gevolg: elke push naar `main` deployt **beide** projecten. Dat is de bedoeling; welke klant het is,
-   bepaalt alleen `CRM_INSTALL`.
-4. `vercel.json`-crons draaien op beide projecten; op KeyForCars antwoordt
-   `/api/cron/openai-paid-jobs` met 404 (onschuldig), `/api/cron/kfc-reconcile` werkt.
+2. **Connect Git Repository** → `czterypokoje-lgtm/keyforcars-crm1` (de Vercel GitHub-app moet
+   toegang hebben tot deze repository). Production Branch: `main`.
+3. Gevolg: alleen pushes naar **deze** repository deployen KeyForCars. Autosleutel24 deployt uit
+   `czterypokoje-lgtm/autoslutel` en raakt KeyForCars niet meer.
+4. `vercel.json` heeft alleen nog de `kfc-reconcile`-cron (03:00).
 5. Domeinen en Woo-webhook-URL's blijven ongewijzigd (zelfde Vercel-project).
 
 ---
@@ -234,7 +235,7 @@ eindigen op 404. Ze lezen geen data van Autosleutel24.
 - **Sıra:** tüm branch'ler `main`'e merge → `node scripts/build-kfc-migration-bundle.mjs` →
   Supabase yedeği → `supabase/kfc_apply_0104z_0106-0134.sql` dosyasını KeyForCars SQL Editor'da
   bir kez çalıştır (hepsi ya da hiçbiri) → `insert into public.crm_install (profile) values ('keyforcars');`
-  → Vercel `keyforcars-crm` env'leri (§4.1) → Git kaynağını `uroborosoftware/autosleutel-crm-erp`
+  → Vercel `keyforcars-crm` env'leri (§4.1) → Git kaynağını `czterypokoje-lgtm/keyforcars-crm1`
   yap → Preview test listesi (§5) → canlıya al.
 - **Geri dönüş:** Vercel'de eski deployment'a Instant Rollback; migration'lar sadece ekleme yaptığı
   için veritabanını geri almak gerekmez.
